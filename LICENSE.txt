@@ -1,0 +1,14 @@
+MIT License  
+
+Copyright (c) [Any] [El teu nom]  
+
+Es concedeix permís, de manera gratuïta, a qualsevol persona que obtingui una còpia d'aquest programari i dels fitxers de documentació associats (el "Programari"), per utilitzar el Programari sense restriccions, incloent-hi, sense limitació, els drets per utilitzar, copiar, modificar, fusionar, publicar, distribuir, sublicenciar i/o vendre còpies del Programari, i per permetre a les persones a qui se'ls proporcioni el Programari fer-ho, amb les condicions següents:  
+
+S'ha d'incloure l'avís de copyright anterior i aquesta nota de permís en totes les còpies o parts substancials del Programari.  
+
+EL PROGRAMARI ES PROPORCIONA "TAL QUAL", SENSE CAP GARANTIA DE CAP TIPUS, EXPRESSA O IMPLÍCITA, INCLOENT-HI PERÒ NO LIMITANT-SE A LES GARANTIES DE COMERCIALITZACIÓ, IDONEÏTAT PER A UN PROPÒSIT PARTICULAR I NO INFRACCIÓ. EN CAP CAS ELS AUTORS O TITULARS DEL COPYRIGHT SERAN RESPONSABLES DE QUALSEVOL RECLAMACIÓ, DANY O ALTRES RESPONSABILITATS, JA SIGUIN EN UNA ACCIÓ CONTRACTUAL, AGRAVADA O D'ALTRA MANERA, DERIVADES O RELACIONADES AMB EL PROGRAMARI O L'ÚS O ALTRES TRACTES EN EL PROGRAMARI.  
+
+---  
+
+Altres materials (dades, documentació, imatges, etc.) estan sota la llicència **Creative Commons BY-NC 4.0**.  
+Més informació aquí: https://creativecommons.org/licenses/by-nc/4.0/  
