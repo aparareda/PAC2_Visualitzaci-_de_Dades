@@ -1,0 +1,423 @@
+---
+title: "PAC2"
+author: "Aina Parareda Casablancas"
+date: "Març 2025"
+output:
+  ioslides_presentation: default
+  slidy_presentation: default
+subtitle: UOC - Visualització de Dades - Aula 1
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## 🌟 Introducció
+
+Per a realitzar aquesta presentació he utilitzat **RStudio** amb l'eina de **RMarkdown** per a generar una presentació en **HTML (ioslides)**.
+
+Aquesta presentació conté una explicació i exemples de diferents tècniques de visualització de dades:
+
+- 🔥 **Heatmap**  
+- 📊 **Radar Charts**  
+- 📈 **Ridgeline Charts**  
+
+El codi i els recursos es poden trobar en el següent repositori de GitHub:  
+🔗 [PAC2_Visualització_de_Dades](https://github.com/aparareda/PAC2_Visualitzaci-_de_Dades)  
+
+## 🌟 Requisits previs
+
+Abans d'executar la presentació, m'asseguro de tenir instal·lades les llibreries necessàries per a R:
+
+```{r check_packages, echo=FALSE}
+packages <- c("ggplot2", "reshape2", "readr", "ggridges", "tibble", "dplyr", "fmsb")
+
+# Comprovo les llibreries instal·lades
+installed_packages <- installed.packages()[,"Package"]
+
+# Mostro les llibreries 
+for (pkg in packages) {
+  cat(paste("- ", pkg, "\n"))
+}
+
+# Instal·lo les que falten
+new_packages <- packages[!(packages %in% installed_packages)]
+if(length(new_packages)) install.packages(new_packages)
+
+
+```
+
+## 📜 Bibliografia
+
+Per a conèixer i veure exemples de les gràfiques i el codi per a realitzar-les he utilitzat les següents webs:
+
+-   Data to Viz: <https://www.data-to-viz.com>
+-   DataViz Project: <https://datavizproject.com>
+-   Catàleg de Visualització de Dades: <https://datavizcatalogue.com/ES>
+
+## 🔥 Heatmap
+
+-   Representació de dades en una **matriu** mitjançant variacions de **color**.
+-   Útil per identificar **patrons, correlacions i relacions** entre variables.
+-   Proporciona una **visió general** de les dades numèriques.
+
+**📜 Origen i Autoria**
+
+-   El terme *Heat map* va ser introduït per **Cormac Kinney (1991)** per visualitzar dades financeres en temps real.
+-   Visualitzacions similars ja existien **fa més d'un segle**.
+
+## 🏗️ Estructura d'un Heatmap
+
+-   **Files:** Representen una categoria (etiquetes a l'esquerra o dreta).
+-   **Columnes:** Representen una altra categoria (etiquetes a la part superior o inferior).
+-   **Celdes:** Contenen dades codificades per color:
+    -   **Dades categòriques:** Colors fixes.
+    -   **Dades numèriques:** Escala de colors.
+
+**🎨 Importància de la Llegenda**
+
+-   Els *Heatmaps* requereixen **una llegenda** per interpretar-los correctament.
+-   Escales de color:
+    -   **Colors sòlids:** Intervals (0-10, 11-20, etc.).
+    -   **Escales en gradient:** Valors continus (ex: de 0 a 100).
+
+**💡 Funcions Principals**
+
+-   **Comparacions:** Permeten analitzar múltiples variables.
+-   **Dades al llarg del temps:** Per detectar tendències temporals.
+-   **Patrons:** Identificació de tendències visuals.
+-   **Relacions:** Anàlisi de correlacions entre variables.
+
+## Avantatges i inconvenients del Heatmap
+
+**✅ Avantatges**
+
+-   Visió clara i ràpida de **grans volums de dades**.
+-   Identificació de **tendències i correlacions**.
+
+**⚠️ Inconvenients**
+
+-   Difícil extreure **valors específics**.
+-   Els colors poden dificultar la interpretació precisa.
+-   Problemes per a persones amb daltonisme.
+-   Cal **normalitzar les dades** abans de visualitzar-les.
+
+## 🔍 Bones Pràctiques del Heatmap
+
+-   Usar **anàlisi de clústers** per agrupar valors similars.
+-   Triar **paletes de colors adequades** per millorar la interpretació.
+-   Afegir **dades en brut** dins les cel·les si cal una lectura precisa.
+
+**📊 Exemples d'Aplicació**
+
+-   🌡️ **Temperatures:** Comparació de temperatures en diferents ciutats durant l'any.
+-   📈 **Finances:** Visualització de volums de compra i venda en mercats financers.
+-   🖥️ **Màrqueting web:** Mapes de calor per veure on els usuaris fan més clic.
+-   🏥 **Medicina:** Expressió gènica en estudis biomèdics.
+
+## 🔥 Heatmap: dades per a realitzar un exemple
+
+- **Font:** [Generalitat de Catalunya](https://administraciodigital.gencat.cat/ca/dades/dades-obertes/informacio-practica/llicencies/)  
+- **Departament:** Salut  
+- **Nom del conjunt de dades:** Registre de casos de COVID-19 a Catalunya per municipi i sexe  
+- **Última actualització:** 19 de febrer de 2025  
+- **Àmbit geogràfic:** Catalunya  
+- **Categoria:** Salut  
+- **Etiquetes:** COVID-19, coronavirus, SARS-CoV-2, ODS3 (Salut i Benestar)  
+
+📊 **Accés a les dades:**  
+[Registre de casos de COVID-19](https://analisi.transparenciacatalunya.cat/Salut/Registre-de-casos-de-COVID-19-a-Catalunya-per-muni/jj6z-iyrp/about_data)  
+
+## 🔥 Heatmap: dades per a realitzar un exemple
+
+- **Descripció:**  
+  - Recull dades sobre **casos positius** per COVID-19 a Catalunya segons municipi, sexe i tipus de prova.  
+  - Les dades inclouen **PCR, TAR, ELISA i test ràpid** fins al **26 de juliol de 2022**.  
+  - Els casos es basen en la **data d’inici de símptomes** i no en la data de la prova.  
+  - **No es consideren casos positius** els serològics posteriors a la vacunació.  
+  - **Dades estàtiques** (no s’actualitzen).  
+
+📊 **Accés a les dades:**  
+[Registre de casos de COVID-19](https://analisi.transparenciacatalunya.cat/Salut/Registre-de-casos-de-COVID-19-a-Catalunya-per-muni/jj6z-iyrp/about_data)  
+
+
+## 🔥 Heatmap: gràfic d'exemple
+
+```{r heatmap, echo=FALSE, message=FALSE, warning=FALSE}
+# Carrego les llibreries necessàries
+library(ggplot2)
+library(lubridate)
+library(dplyr)
+
+# Carrego el CSV
+dades <- read.csv("C:/Users/ainap/Documents/Registre_de_casos_de_COVID-19_a_Catalunya_per_municipi_i_sexe_20250402.csv")
+
+# Converteixo la columna 'TipusCasData' a format de data
+dades$TipusCasData <- as.Date(dades$TipusCasData, format = "%d/%m/%Y")
+
+# Agrupo per data i tipus de cas, i sumo el número de casos
+dades_agg <- dades %>%
+  group_by(TipusCasData, TipusCasDescripcio) %>%
+  summarise(TotalCasos = sum(NumCasos, na.rm = TRUE), .groups = "drop")
+
+# Creo el heatmap
+ggplot(dades_agg, aes(x = TipusCasData, y = TipusCasDescripcio, fill = TotalCasos)) +
+  geom_tile() +
+  scale_fill_gradient(low = "white", high = "blue") +
+  labs(title = "Heatmap de Casos per Tipus i Data",
+       x = "Data", y = "Tipus de Cas") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+
+```
+
+## 🔥 Heatmap: conclusions del gràfic d'exemple
+
+El heatmap mostra la distribució temporal dels casos de COVID-19 a Catalunya segons el tipus de test utilitzat:
+
+1. **Intensitat i pics de casos**:  
+   - Alta incidència de casos amb pics a finals de 2021 i principis de 2022, especialment per **TAR** i **PCR**.
+
+2. **Evolució en el temps**:  
+   - Menor intensitat als primers mesos. L'ús de **TAR** creix respecte a la **PCR** a mesura que passa el temps.
+
+3. **Distribució segons tipus de test**:  
+   - **PCR** i **TAR** són els més utilitzats, mentre que altres mètodes com **ELISA** tenen menor presència.
+
+
+## 🌟 Radar Chart
+
+-   També conegut com: **Web Chart, Spider Chart, Star Chart, Star Plot, Cobweb Chart, Gràfic de Red, Gràfic Polar i Gràfic de Estrella**.
+-   Representa dades **multivariants** en un gràfic bidimensional.
+-   Cada variable té el seu propi **eix**, i tots parteixen des del mateix punt central.
+
+## 📜 Com Funciona el Radar Chart?
+
+-   Els gràfics radials són útils per **comparar múltiples variables quantitatives**.
+-   Permeten veure quines variables tenen **valors similars** o si hi ha **valors atípics**.
+-   Mostren clarament **què variables són altes o baixes** dins d'un conjunt de dades.
+-   Cada variable té un **eix propi**, tots disposats radialment i amb **la mateixa escala**.
+-   Les línies de quadrícula serveixen com a guia per ajudar a la interpretació.
+-   Els valors es tracen al llarg del seu **eix individual** i es connecten per formar un **polígon**.
+
+## ⚠️ Problemes i Limitacions dels Radar Charts
+
+-   **Massa polígons** fan el gràfic difícil de llegir i desordenat.
+-   Si els polígons estan plens, poden **tapar informació rellevant**.
+-   **Massa variables** creen **massa eixos**, dificultant la interpretació.
+-   No són ideals per **comparar valors específics** en cada variable.
+-   La interpretació és menys intuïtiva que en altres gràfics més simples.
+
+## ⚠️ Errors Comuns i Bones Pràctiques\* dels Radar Charts
+
+**🚨 Errors Comuns**
+
+-   **No incloure més de 5 grups en el mateix gràfic** → Millor utilitzar facetes.
+-   **Evitar escales diferents entre variables** → Si es fan servir, mostrar clarament les escales.
+
+**✅ Bones Pràctiques**
+
+-   Útil per comparar **dades multidimensionals**.
+-   Més efectiu amb un **nombre reduït de categories**.
+-   Pot ser útil si es destaquen **patrons generals** en lloc de valors concrets.
+
+## 📊 Exemples d'Aplicació dels Radar Charts
+
+-   🏅 **Comparació de rendiment d'esportistes** en diferents categories.
+-   📈 **Avaluació d'indicadors de rendiment** en empreses.
+-   🥘 **Anàlisi nutricional** de diferents aliments.
+
+**🔍 Funcions Principals**
+
+-   **Comparacions** entre múltiples variables.
+-   **Relacions** entre els diferents paràmetres.
+-   **Patrons** que ajuden a identificar tendències.
+
+## 🌟 Radar Charts: dades per a realitzar un exemple
+
+- **Font:** [Generalitat de Catalunya](https://administraciodigital.gencat.cat/ca/dades/dades-obertes/informacio-practica/llicencies/)  
+- **Departament:** Territori, Habitatge i Transició Ecològica  
+- **Nom del conjunt de dades:** Estadístiques de residus municipals  
+- **Última actualització:** 20 de febrer de 2025  
+- **Àmbit geogràfic:** Catalunya  
+- **Categoria:** Medi Ambient  
+- **Etiquetes:** Residus, recollida selectiva, vidre, orgànica, paper, fracció resta, ODS  
+
+📊 **Accés a les dades:**  
+[Estadístiques de residus municipals](https://analisi.transparenciacatalunya.cat/Medi-Ambient/Estad-stiques-de-residus-municipals/69zu-w48s/about_data)  
+
+## 🌟 Radar Charts: dades per a realitzar un exemple
+
+- **Descripció:**  
+  - Recull estadístiques de residus municipals a Catalunya.  
+  - Inclou quantitats de recollida selectiva per fraccions, totals en termes absoluts i per càpita.  
+  - Conté dades sobre la fracció resta i el seu destí.  
+
+📊 **Accés a les dades:**  
+[Estadístiques de residus municipals](https://analisi.transparenciacatalunya.cat/Medi-Ambient/Estad-stiques-de-residus-municipals/69zu-w48s/about_data)  
+
+
+## 🌟 Radar Charts: gràfic d'exemple
+
+```{r radarchart, echo=FALSE, message=FALSE, warning=FALSE}
+# Carrego les biblioteques necessàries
+library(tidyverse)
+library(fmsb)
+
+# Carrego el fitxer CSV
+dades <- read.csv("C:/Users/ainap/Documents/Estad_stiques_de_residus_municipals_20250402.csv")
+
+# Selecciono les columnes que ens interessen
+dades_seleccionades <- dades %>%
+  select(Autocompostatge, Matèria.orgànica, Poda.i.jardineria, Paper.i.cartró, Vidre,
+         Envasos.lleugers, Residus.voluminosos...fusta, RAEE, Ferralla, Olis.vegetals, 
+         Tèxtil, Runes, Residus.en.Petites.Quantitats..RPQ., Piles, Medicaments,
+         Altres.recollides.selectives, Total.Recollida.Selectiva)
+
+# Netejo les dades eliminant les files amb NA
+dades_seleccionades_netes <- dades_seleccionades %>%
+  drop_na()
+
+# Calculo les mitjanes de les fraccions de residus per fer el radar chart
+mitjanes_residus <- colMeans(dades_seleccionades_netes, na.rm = TRUE)
+
+# Afegeixo les mitjanes a un data frame per a la gràfica
+dades_radar <- as.data.frame(t(mitjanes_residus))
+
+# Afegeixo el nom de les columnes (fraccions de residus) com a noms de les files
+colnames(dades_radar) <- colnames(dades_seleccionades)
+
+# Afegeixo una fila de màxims i mínims per al radar chart
+dades_radar <- rbind(rep(100, ncol(dades_radar)), rep(0, ncol(dades_radar)), dades_radar)
+
+# Genero el Radar Chart
+radarchart(dades_radar, axistype = 1, 
+           pcol = "blue", pfcol = scales::alpha("blue", 0.3), plwd = 4, 
+           cglcol = "grey", cglty = 1, axislabcol = "black", caxislabels = seq(0, 100, 20),
+           title = "Gràfica Radar de Fraccions de Residus")
+
+
+```
+
+## 🌟 Radar Charts: conclusions del gràfic d'exemple
+
+Aquesta gràfica de radar mostra la distribució de diferents fraccions de residus recollits selectivament:
+
+1. **Fraccions més destacades**:  
+   - **Paper i cartró**, **vidre** i **envasos lleugers** són les més recollides, indicant una bona separació en el sistema de recollida.  
+   - També es destaca l'**autocompostatge** i la **matèria orgànica**.
+
+2. **Fraccions menys recollides**:  
+   - **Olis vegetals, ferralla, RAEE, piles, medicaments i tèxtil** tenen valors baixos, possiblement per dificultats en la recollida o manca de consciència ciutadana.
+
+
+## 🌟 Radar Charts: conclusions del gràfic d'exemple
+
+3. **Distribució general**:  
+   - Alguns pics evidents en determinades fraccions, mentre que d'altres tenen una aportació baixa.  
+   - **"Altres recollides selectives"** és també significativa.
+
+
+## 🌄 Ridgeline Charts: Definició
+
+-   També coneguts com: **Joyplot**.
+-   Mostren la **distribució** d'un valor numèric per a diferents grups.
+-   La distribució es representa amb **histogrames** o **gràfics de densitat**.
+-   Tots els gràfics es **solapen lleugerament** en un mateix eix horitzontal.
+
+**📜 Com Funciona?**
+
+-   Es col·loquen diverses distribucions **alineades** en un mateix eix.
+-   S'utilitza una **superposició parcial** per optimitzar l'espai.
+-   Especialment útil quan hi ha **molts grups** a representar.
+
+## 🎯 Quan Utilitzar un Ridgeline Chart?
+
+-   Quan cal **visualitzar moltes distribucions** sense ocupar massa espai.
+-   Quan hi ha **patrons clars** que es poden observar en les dades.
+-   Quan es vol destacar l'evolució d'una distribució al llarg del temps.
+
+**⚠️ Problemes i Limitacions**
+
+-   **Pot ocultar informació** a causa de la superposició.
+-   **L'elecció de la mida dels bins o l'ample de banda** és crucial per a una correcta interpretació.
+-   No sempre és intuïtiu si els **grups són massa similars** o poc diferenciats.
+
+## 📊 Exemples d'Aplicació del Ridgeline Chart
+
+-   🎵 **Anàlisi de la durada de cançons** en diferents dècades.
+-   🏆 **Distribució d'estadístiques esportives** en diferents equips.
+-   🧪 **Mesures experimentals** en diferents condicions de laboratori.
+
+**🚨 Errors Comuns**
+
+-   **No ajustar correctament la mida dels bins o el bandwidth** → Això pot afectar la claredat del gràfic.
+-   **Ús inadequat de la superposició** → Si no hi ha un patró clar, pot dificultar la lectura.
+
+
+## 🌄 Ridgeline Charts: dades per a realitzar un exemple
+
+- **Font:** [Generalitat de Catalunya](https://administraciodigital.gencat.cat/ca/dades/dades-obertes/informacio-practica/llicencies/)  
+- **Departament:** Economia i Hisenda  
+- **Nom del conjunt de dades:** Retribucions del personal funcionari  
+- **Última actualització:** 19 de febrer de 2025  
+- **Àmbit geogràfic:** Catalunya  
+- **Categoria:** Sector Públic  
+- **Etiquetes:** Retribucions, funcionaris, ODS16 (institucions sòlides), ODS5 (igualtat de gènere)  
+
+📊 **Accés a les dades:**  
+[Retribucions del personal funcionari](https://analisi.transparenciacatalunya.cat/Sector-P-blic/Retribucions-del-personal-funcionari/b4zx-cfga/about_data)  
+
+## 🌄 Ridgeline Charts: dades per a realitzar un exemple
+
+- **Descripció:**  
+  - Canvis en les retribucions del personal funcionari des de **2007 fins a l'actualitat**.  
+  - Inclou grup, nivell, sou base, complements, sou total mensual i anual, i imports de triennis.  
+  - **Actualització anual.**  
+
+📊 **Accés a les dades:**  
+[Retribucions del personal funcionari](https://analisi.transparenciacatalunya.cat/Sector-P-blic/Retribucions-del-personal-funcionari/b4zx-cfga/about_data)  
+
+
+## 🌄 Ridgeline Charts: gràfic d'exemple
+
+```{r ridgeline_chart, echo=FALSE, message=FALSE, warning=FALSE}
+# Carrego les biblioteques necessàries
+library(ggplot2)
+library(ggridges)
+library(dplyr)
+
+# Carrego el CSV
+dades <- read.csv("C:/Users/ainap/Documents/Retribucions_del_personal_funcionari_20250402.csv")
+
+# Selecciono una variable contínua (com Sou) i una variable categòrica (com GRUP)
+dades_ridgeline <- dades %>% 
+  select(Sou, GRUP) %>%
+  filter(!is.na(Sou))  # Eliminar els valors NA per a Sou
+
+# Creo el Ridgeline Chart
+ggplot(dades_ridgeline, aes(x = Sou, y = GRUP, fill = GRUP)) +
+  geom_density_ridges(alpha = 0.7) +
+  theme_ridges() +
+  labs(title = "Distribució del Sou per GRUP",
+       x = "Sou",
+       y = "GRUP") +
+  theme(legend.position = "none")
+
+
+```
+
+## 🌄 Ridgeline Charts: conclusions del gràfic d'exemple
+
+Aquesta gràfica mostra la distribució del sou per diferents grups (C2, C1, AP, A2 i A1):
+
+1. **C2 i C1**:  
+   - Sous més baixos, concentrats entre **500 i 700** euros.  
+
+2. **AP (Administració Pública?)**:  
+   - Distribució més àmplia, amb un pic a **900-1000** euros, indicant diversitat salarial.
+
+3. **A2 i A1**:  
+   - **A2** té un pic a **1000** euros, però amb més dispersió.  
+   - **A1** destaca amb sous superiors a **1200** euros i més variabilitat.
+
